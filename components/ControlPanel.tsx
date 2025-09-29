@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Tool } from '../types';
 
 interface ControlPanelProps {
   prompt: string;
@@ -8,6 +9,17 @@ interface ControlPanelProps {
   isLoading: boolean;
   error: string | null;
   generatedText: string;
+  activeTool: Tool;
+  companyName: string;
+  setCompanyName: (name: string) => void;
+  logoStyle: string;
+  setLogoStyle: (style: string) => void;
+  comicStory: string;
+  setComicStory: (story: string) => void;
+  mockupType: string;
+  setMockupType: (type: string) => void;
+  mockupContext: string;
+  setMockupContext: (context: string) => void;
 }
 
 const GenerateIcon: React.FC = () => (
@@ -17,22 +29,124 @@ const GenerateIcon: React.FC = () => (
 );
 
 
-const ControlPanel: React.FC<ControlPanelProps> = ({ prompt, setPrompt, handleGeneration, isLoading, error, generatedText }) => {
+const ControlPanel: React.FC<ControlPanelProps> = ({ 
+    prompt, 
+    setPrompt, 
+    handleGeneration, 
+    isLoading, 
+    error, 
+    generatedText,
+    activeTool,
+    companyName,
+    setCompanyName,
+    logoStyle,
+    setLogoStyle,
+    comicStory,
+    setComicStory,
+    mockupType,
+    setMockupType,
+    mockupContext,
+    setMockupContext
+}) => {
   return (
     <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700 shadow-inner flex flex-col gap-4">
-      <div className="flex flex-col md:flex-row gap-4">
-        <textarea
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Describe the edit you want to make..."
-          rows={3}
-          className="flex-1 bg-gray-900/50 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-200 resize-none"
-          disabled={isLoading}
-        />
+      <div className="flex flex-col md:flex-row gap-4 items-start">
+        {activeTool === Tool.Logo ? (
+            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label htmlFor="companyName" className="block text-sm font-medium text-gray-300 mb-2">Company Name</label>
+                    <input
+                        id="companyName"
+                        type="text"
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
+                        placeholder="e.g., Innovate"
+                        className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-200"
+                        disabled={isLoading}
+                        aria-label="Company Name"
+                    />
+                </div>
+                <div>
+                    <label htmlFor="logoStyle" className="block text-sm font-medium text-gray-300 mb-2">Logo Style</label>
+                    <input
+                        id="logoStyle"
+                        type="text"
+                        value={logoStyle}
+                        onChange={(e) => setLogoStyle(e.target.value)}
+                        placeholder="e.g., modern, minimalist"
+                        className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-200"
+                        disabled={isLoading}
+                        aria-label="Logo Style"
+                    />
+                </div>
+            </div>
+        ) : activeTool === Tool.ComicStyle ? (
+            <div className="flex-1">
+                <label htmlFor="comicStory" className="block text-sm font-medium text-gray-300 mb-2">Story / Scene Description</label>
+                <textarea
+                    id="comicStory"
+                    value={comicStory}
+                    onChange={(e) => setComicStory(e.target.value)}
+                    placeholder="Describe the comic book scene..."
+                    rows={4}
+                    className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-200 resize-none"
+                    disabled={isLoading}
+                    aria-label="Story or Scene Description for Comic Style"
+                />
+            </div>
+        ) : activeTool === Tool.Mockup ? (
+            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label htmlFor="mockupType" className="block text-sm font-medium text-gray-300 mb-2">Mockup Type</label>
+                    <div className="relative">
+                        <select
+                            id="mockupType"
+                            value={mockupType}
+                            onChange={(e) => setMockupType(e.target.value)}
+                            className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-200 appearance-none pr-8"
+                            disabled={isLoading}
+                            aria-label="Mockup Type"
+                        >
+                            <option value="laptop screen">Laptop</option>
+                            <option value="smartphone screen">Smartphone</option>
+                            <option value="t-shirt">T-Shirt</option>
+                            <option value="mug">Mug</option>
+                            <option value="billboard">Billboard</option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label htmlFor="mockupContext" className="block text-sm font-medium text-gray-300 mb-2">Context / Environment</label>
+                    <input
+                        id="mockupContext"
+                        type="text"
+                        value={mockupContext}
+                        onChange={(e) => setMockupContext(e.target.value)}
+                        placeholder="e.g., on a clean, wooden desk"
+                        className="w-full bg-gray-900/50 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-200"
+                        disabled={isLoading}
+                        aria-label="Mockup Context"
+                    />
+                </div>
+            </div>
+        ) : (
+            <textarea
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="Describe the edit you want to make..."
+                rows={4}
+                className="flex-1 bg-gray-900/50 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-200 resize-none"
+                disabled={isLoading}
+                aria-label="Prompt for image generation"
+            />
+        )}
         <button
           onClick={handleGeneration}
-          disabled={isLoading}
-          className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 ease-in-out hover:shadow-lg hover:shadow-cyan-500/30 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
+          disabled={isLoading || !prompt.trim()}
+          className="w-full md:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 ease-in-out hover:shadow-lg hover:shadow-cyan-500/30 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 md:mt-9"
         >
           {isLoading ? (
             <>
@@ -47,8 +161,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({ prompt, setPrompt, handleGe
           )}
         </button>
       </div>
-      {error && <div className="bg-red-900/50 border border-red-500 text-red-300 p-3 rounded-lg text-sm">{error}</div>}
-      {generatedText && <div className="bg-gray-900/50 border border-gray-600 text-gray-300 p-3 rounded-lg text-sm"><p className="font-semibold text-cyan-400 mb-1">AI Response:</p>{generatedText}</div>}
+      {error && <div role="alert" className="bg-red-900/50 border border-red-500 text-red-300 p-3 rounded-lg text-sm">{error}</div>}
+      {generatedText && <div role="status" className="bg-gray-900/50 border border-gray-600 text-gray-300 p-3 rounded-lg text-sm"><p className="font-semibold text-cyan-400 mb-1">AI Response:</p>{generatedText}</div>}
     </div>
   );
 };
